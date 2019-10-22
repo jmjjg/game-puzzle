@@ -1,24 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <title>jmjjg/game-puzzle</title>
     <meta charset="utf-8">
 
-    <link rel="stylesheet" href="out/app.min.css">
+    <style type="text/css">
+        .tile {
+            position: absolute;
+            background-repeat: no-repeat;
+            background-attachment: local;
+        }
+    </style>
+    <link rel="stylesheet" href="out/game-puzzle.min.css">
 </head>
 <body>
 <div id="container">
-    <div id="game"></div>
+    <div id="game">
+        <!-- @todo: div + dimensions -->
+        <img id="target" src="src/img/img-001.jpg" alt="" />
+    </div>
 </div>
 
-<script src="out/app.js"></script>
+<script src="out/game-puzzle.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script><!-- @fixme -->
 
 <script type="text/javascript">
-    var game, defaults = {};
+    // @see https://keyholesoftware.com/2015/11/30/fun-with-jquery-create-a-puzzle/
+    var game = {
+        'tiles': []
+    };
+
+    var onRefresh = function()
+    {
+        var target = $('#target'),
+            columns = 5,
+            rows = 4,
+            ratioWidth = target.width() / $(window).width(),
+            ratioHeight = target.height() / $(window).height(),
+            ratio = Math.max(ratioWidth, ratioHeight),
+            row,
+            col,
+            tileHeight,
+            tileWidth;
+
+        $(target).width($(target).width()/ratio);
+
+        targetWidth = Math.round($(target).width());
+        targetHeight = Math.round($(target).height());
+        tileWidth = Math.round($(target).width()/columns);
+        tileHeight = Math.round($(target).height()/rows);
+
+        for (row = 0;row<rows;row++) {
+            for (col = 0;col<columns;col++) {
+                (function(row, col, create) {
+                    var tile;
+                    if (create === true) {
+                        tile = $('<div class="tile">');
+                        $(tile).css({
+                                'background-image': 'url("' + $(target).attr('src') + '")',
+                                'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
+                                'top': (row * tileHeight) + 'px',
+                                'right': 0
+                            })
+                            .attr('data-col', col)
+                            .attr('data-row', row);
+                    } else {
+                        tile = $('.tile[data-col='+col+'][data-row='+row+']');
+                    }
+
+                    $(tile).css({
+                        'width': tileWidth,
+                        'height': tileHeight,
+                        'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
+                        'background-size': targetWidth + 'px ' + targetHeight + 'px',
+                    });
+
+                    if (create === true) {
+                        $('#game').append($(tile));
+                        game.tiles.push(tile);
+                    }
+                })(row, col, game.tiles.length < (rows*columns));
+            }
+        }
+
+        $('.tile').draggable({
+            revert: 'invalid'
+        });
+    };
+
     $(function () {
-        alert('w00t');
-        // game = new GameChrysalisController();
-        // game.initialize(defaults);
+        onRefresh();
+        $('#target').droppable();
+    });
+    $(window).resize(function() {
+        onRefresh();
     });
 </script>
 </body>
