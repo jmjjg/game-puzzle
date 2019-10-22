@@ -5,6 +5,17 @@
     <meta charset="utf-8">
 
     <style type="text/css">
+        html, body {margin: 0; height: 100%; overflow: hidden}
+        #screen {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: silver;
+        }
+        #game {
+            height: 100%;
+            overflow: hidden;
+        }
         .tile {
             position: absolute;
             background-repeat: no-repeat;
@@ -14,21 +25,36 @@
     <link rel="stylesheet" href="out/game-puzzle.min.css">
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container">
-        <span class="navbar-brand">Navbar</span>
-    </div>
-</nav>
-<div id="game">
-    <!-- @todo: div + dimensions -->
-    <img id="target" src="src/img/img-001.jpg" alt=""/>
+<div id="screen">
+<!--
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbar-menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Joueur 1
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbar-menu">
+                        <a class="dropdown-item" href="#">Modifier le nom</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Paramètres</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+-->
+    <div id="game"></div>
 </div>
 
 <script src="out/game-puzzle.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script><!-- @fixme -->
 
 <script type="text/javascript">
-    // @see https://keyholesoftware.com/2015/11/30/fun-with-jquery-create-a-puzzle/
     var game = {
         'tiles': [],
         'settings': {
@@ -40,9 +66,30 @@
     };
 
     var onRefresh = function () {
+        if ($('#target').length === 0) {
+            var target = $('<div id="target"></div>'),
+                imgWidth = 1436,
+                imgHeight= 805,
+                ratioWidth = imgWidth / $('#game').width(),
+                ratioHeight = imgHeight / $('#game').height(),
+                ratio = Math.max(ratioWidth, ratioHeight);
+
+            $(target).css({
+                'background-image': 'url("src/img/img-001.jpg")',
+                'background-size': '100% 100%'
+            })
+            $(target).width(imgWidth / ratio);
+            $(target).height(imgHeight / ratio);
+            $('#game').append($(target));
+            console.log(
+                $(target).width(),
+                $(target).height()
+            );
+        }
+
         var target = $('#target'),
-            ratioWidth = target.width() / $(window).width(),
-            ratioHeight = target.height() / $(window).height(),
+            ratioWidth = target.width() / $('#game').width(),
+            ratioHeight = target.height() / $('#game').height(),
             ratio = Math.max(ratioWidth, ratioHeight),
             row,
             col,
@@ -50,6 +97,7 @@
             tileWidth;
 
         $(target).width($(target).width() / ratio);
+        $(target).height($(target).height() / ratio);
 
         targetWidth = Math.round($(target).width());
         targetHeight = Math.round($(target).height());
@@ -63,7 +111,7 @@
                     if (create === true) {
                         tile = $('<div class="tile">');
                         $(tile).css({
-                            'background-image': 'url("' + $(target).attr('src') + '")',
+                            'background-image': $(target).css('background-image'),
                             'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
                         })
                             .attr('data-col', col)
@@ -92,9 +140,9 @@
         // https://jqueryui.com/draggable/
         // https://api.jqueryui.com/draggable/
         $('.tile').draggable({
-            // 'containment': 'parent',
             'opacity': game.settings.opacity,
-            'revert': true
+            'revert': true,
+            'scroll': false
         });
     };
 
@@ -128,6 +176,7 @@
             }
         });
     });
+
     $(window).resize(function () {
         onRefresh();
     });
