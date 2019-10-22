@@ -14,11 +14,14 @@
     <link rel="stylesheet" href="out/game-puzzle.min.css">
 </head>
 <body>
-<div id="container">
-    <div id="game">
-        <!-- @todo: div + dimensions -->
-        <img id="target" src="src/img/img-001.jpg" alt="" />
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <span class="navbar-brand">Navbar</span>
     </div>
+</nav>
+<div id="game">
+    <!-- @todo: div + dimensions -->
+    <img id="target" src="src/img/img-001.jpg" alt=""/>
 </div>
 
 <script src="out/game-puzzle.js"></script>
@@ -27,14 +30,17 @@
 <script type="text/javascript">
     // @see https://keyholesoftware.com/2015/11/30/fun-with-jquery-create-a-puzzle/
     var game = {
-        'tiles': []
+        'tiles': [],
+        'settings': {
+            'columns': 2,
+            'rows': 2,
+            'tolerance': 50,
+            'opacity': 0.75
+        }
     };
 
-    var onRefresh = function()
-    {
+    var onRefresh = function () {
         var target = $('#target'),
-            columns = 5,
-            rows = 4,
             ratioWidth = target.width() / $(window).width(),
             ratioHeight = target.height() / $(window).height(),
             ratio = Math.max(ratioWidth, ratioHeight),
@@ -43,32 +49,32 @@
             tileHeight,
             tileWidth;
 
-        $(target).width($(target).width()/ratio);
+        $(target).width($(target).width() / ratio);
 
         targetWidth = Math.round($(target).width());
         targetHeight = Math.round($(target).height());
-        tileWidth = Math.round($(target).width()/columns);
-        tileHeight = Math.round($(target).height()/rows);
+        tileWidth = Math.round($(target).width() / game.settings.columns);
+        tileHeight = Math.round($(target).height() / game.settings.rows);
 
-        for (row = 0;row<rows;row++) {
-            for (col = 0;col<columns;col++) {
-                (function(row, col, create) {
+        for (row = 0; row < game.settings.rows; row++) {
+            for (col = 0; col < game.settings.columns; col++) {
+                (function (row, col, create) {
                     var tile;
                     if (create === true) {
                         tile = $('<div class="tile">');
                         $(tile).css({
-                                'background-image': 'url("' + $(target).attr('src') + '")',
-                                'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
-                                'top': (row * tileHeight) + 'px',
-                                'right': 0
-                            })
+                            'background-image': 'url("' + $(target).attr('src') + '")',
+                            'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
+                        })
                             .attr('data-col', col)
                             .attr('data-row', row);
                     } else {
-                        tile = $('.tile[data-col='+col+'][data-row='+row+']');
+                        tile = $('.tile[data-col=' + col + '][data-row=' + row + ']');
                     }
 
                     $(tile).css({
+                        'top': ($('#game').position().top + row * tileHeight) + 'px',
+                        'right': 0,
                         'width': tileWidth,
                         'height': tileHeight,
                         'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
@@ -79,20 +85,50 @@
                         $('#game').append($(tile));
                         game.tiles.push(tile);
                     }
-                })(row, col, game.tiles.length < (rows*columns));
+                })(row, col, game.tiles.length < (game.settings.rows * game.settings.columns));
             }
         }
 
+        // https://jqueryui.com/draggable/
+        // https://api.jqueryui.com/draggable/
         $('.tile').draggable({
-            revert: 'invalid'
+            // 'containment': 'parent',
+            'opacity': game.settings.opacity,
+            'revert': true
         });
     };
 
     $(function () {
         onRefresh();
-        $('#target').droppable();
+        // https://jqueryui.com/droppable/
+        // https://api.jqueryui.com/droppable/
+        $('#game').droppable({
+            'drop': function (event, ui) {
+                // console.log({event: event, ui: ui});
+                var tile = $(ui.draggable),
+                    col = tile.attr('data-col'),
+                    row = tile.attr('data-row'),
+                    offsetX = $('#target').position().left,
+                    offsetY = $('#target').position().top,
+                    target = {
+                        'left': offsetX + (col * tile.width()),
+                        'top': offsetY + (row * tile.height())
+                    },
+                    correct = (
+                        (ui.position.left - game.settings.tolerance <= target.left)
+                        && (ui.position.left + game.settings.tolerance >= target.left)
+                        && (ui.position.top - game.settings.tolerance <= target.top)
+                        && (ui.position.top + game.settings.tolerance >= target.top)
+                    );
+                // console.log(tile, row, col, target, ui.position, correct);
+                if (correct === true) {
+                    tile.animate({'left': target.left + 'px', 'top': target.top + 'px'});
+                    tile.remove();
+                }
+            }
+        });
     });
-    $(window).resize(function() {
+    $(window).resize(function () {
         onRefresh();
     });
 </script>
