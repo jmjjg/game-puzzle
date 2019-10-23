@@ -9,7 +9,7 @@ var game_puzzle = {
     'refresh': function() {
         var max = {
             'width': parseInt($('#game').width(), 10),
-            'height': parseInt($('#game').height() - ($('nav').length === 0 ? 0 : $('nav').height()), 10)
+            'height': parseInt($('#game').height() - ($('nav').length === 0 ? 0 : $('nav').outerHeight()), 10)
         };
 
         if ($('#target').length === 0) {
@@ -98,8 +98,8 @@ var game_puzzle = {
             'drop': function (event, ui) {
                 var tile = $(ui.draggable),
                     target = {
-                        'left': $('#target').position().left + (tile.attr('data-col') * tile.width()),
-                        'top': $('#target').position().top + (tile.attr('data-row') * tile.height())
+                        'left': $('#target').offset().left + (tile.attr('data-col') * tile.width()),
+                        'top': $('#target').offset().top + (tile.attr('data-row') * tile.height())
                     },
                     correct = (
                         (ui.position.left - game_puzzle.settings.tolerance <= target.left)
