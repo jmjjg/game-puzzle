@@ -1,185 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <title>jmjjg/game-puzzle</title>
-    <meta charset="utf-8">
+    <head>
+        <title>jmjjg/game-puzzle</title>
+        <meta charset="utf-8">
 
-    <style type="text/css">
-        html, body {margin: 0; height: 100%; overflow: hidden}
-        #screen {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            background-color: silver;
-        }
-        #game {
-            height: 100%;
-            overflow: hidden;
-        }
-        .tile {
-            position: absolute;
-            background-repeat: no-repeat;
-            background-attachment: local;
-        }
-    </style>
-    <link rel="stylesheet" href="out/game-puzzle.min.css">
-</head>
-<body>
-<div id="screen">
-<!--
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <link rel="stylesheet" href="out/game-puzzle.min.css">
+    </head>
+    <body>
+        <div id="screen">
+            <!--
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbar-menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Joueur 1
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbar-menu">
-                        <a class="dropdown-item" href="#">Modifier le nom</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Paramètres</a>
+                    <div class="collapse navbar-collapse" id="navbar">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbar-menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Joueur 1
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbar-menu">
+                                    <a class="dropdown-item" href="#">Modifier le nom</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Paramètres</a>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                </li>
-            </ul>
+                </nav>
+            -->
+            <div id="game"></div>
         </div>
-    </nav>
--->
-    <div id="game"></div>
-</div>
 
-<script src="out/game-puzzle.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script><!-- @fixme -->
-
-<script type="text/javascript">
-    var game = {
-        'tiles': [],
-        'settings': {
-            'columns': 2,
-            'rows': 2,
-            'tolerance': 50,
-            'opacity': 0.75
-        }
-    };
-
-    var onRefresh = function () {
-        if ($('#target').length === 0) {
-            var target = $('<div id="target"></div>'),
-                imgWidth = 1436,
-                imgHeight= 805,
-                ratioWidth = imgWidth / $('#game').width(),
-                ratioHeight = imgHeight / $('#game').height(),
-                ratio = Math.max(ratioWidth, ratioHeight);
-
-            $(target).css({
-                'background-image': 'url("src/img/img-001.jpg")',
-                'background-size': '100% 100%'
-            })
-            $(target).width(imgWidth / ratio);
-            $(target).height(imgHeight / ratio);
-            $('#game').append($(target));
-            console.log(
-                $(target).width(),
-                $(target).height()
-            );
-        }
-
-        var target = $('#target'),
-            ratioWidth = target.width() / $('#game').width(),
-            ratioHeight = target.height() / $('#game').height(),
-            ratio = Math.max(ratioWidth, ratioHeight),
-            row,
-            col,
-            tileHeight,
-            tileWidth;
-
-        $(target).width($(target).width() / ratio);
-        $(target).height($(target).height() / ratio);
-
-        targetWidth = Math.round($(target).width());
-        targetHeight = Math.round($(target).height());
-        tileWidth = Math.round($(target).width() / game.settings.columns);
-        tileHeight = Math.round($(target).height() / game.settings.rows);
-
-        for (row = 0; row < game.settings.rows; row++) {
-            for (col = 0; col < game.settings.columns; col++) {
-                (function (row, col, create) {
-                    var tile;
-                    if (create === true) {
-                        tile = $('<div class="tile">');
-                        $(tile).css({
-                            'background-image': $(target).css('background-image'),
-                            'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
-                        })
-                            .attr('data-col', col)
-                            .attr('data-row', row);
-                    } else {
-                        tile = $('.tile[data-col=' + col + '][data-row=' + row + ']');
-                    }
-
-                    $(tile).css({
-                        'top': ($('#game').position().top + row * tileHeight) + 'px',
-                        'right': 0,
-                        'width': tileWidth,
-                        'height': tileHeight,
-                        'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
-                        'background-size': targetWidth + 'px ' + targetHeight + 'px',
-                    });
-
-                    if (create === true) {
-                        $('#game').append($(tile));
-                        game.tiles.push(tile);
-                    }
-                })(row, col, game.tiles.length < (game.settings.rows * game.settings.columns));
-            }
-        }
-
-        // https://jqueryui.com/draggable/
-        // https://api.jqueryui.com/draggable/
-        $('.tile').draggable({
-            'opacity': game.settings.opacity,
-            'revert': true,
-            'scroll': false
-        });
-    };
-
-    $(function () {
-        onRefresh();
-        // https://jqueryui.com/droppable/
-        // https://api.jqueryui.com/droppable/
-        $('#game').droppable({
-            'drop': function (event, ui) {
-                // console.log({event: event, ui: ui});
-                var tile = $(ui.draggable),
-                    col = tile.attr('data-col'),
-                    row = tile.attr('data-row'),
-                    offsetX = $('#target').position().left,
-                    offsetY = $('#target').position().top,
-                    target = {
-                        'left': offsetX + (col * tile.width()),
-                        'top': offsetY + (row * tile.height())
-                    },
-                    correct = (
-                        (ui.position.left - game.settings.tolerance <= target.left)
-                        && (ui.position.left + game.settings.tolerance >= target.left)
-                        && (ui.position.top - game.settings.tolerance <= target.top)
-                        && (ui.position.top + game.settings.tolerance >= target.top)
-                    );
-                // console.log(tile, row, col, target, ui.position, correct);
-                if (correct === true) {
-                    tile.animate({'left': target.left + 'px', 'top': target.top + 'px'});
-                    tile.remove();
-                }
-            }
-        });
-    });
-
-    $(window).resize(function () {
-        onRefresh();
-    });
-</script>
-</body>
+        <script src="out/game-puzzle.js"></script>
+        <script>
+            $(function () {
+                game_puzzle.init();
+            });
+        </script>
+    </body>
 </html>

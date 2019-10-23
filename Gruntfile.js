@@ -12,6 +12,7 @@ module.exports = function (grunt) {
                 "/opt/node_modules/jquery/dist/jquery.min.js",
                 "/opt/node_modules/popper.js/dist/umd/popper.js",
                 "/opt/node_modules/bootstrap/dist/js/bootstrap.js",
+                "src/js/jquery-ui.js",
                 "src/js/game-puzzle.js",
             ]
         },
@@ -58,6 +59,7 @@ module.exports = function (grunt) {
             watch: {
                 build: {
                     files: [
+                        "*",
                         "**/*",
                         "!out/*"
                     ],
