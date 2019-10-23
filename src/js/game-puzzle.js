@@ -7,12 +7,17 @@ var game_puzzle = {
         'opacity': 0.75
     },
     'refresh': function() {
+        var max = {
+            'width': parseInt($('#game').width(), 10),
+            'height': parseInt($('#game').height() - ($('nav').length === 0 ? 0 : $('nav').height()), 10)
+        };
+
         if ($('#target').length === 0) {
             var target = $('<div id="target"></div>'),
                 imgWidth = 1436,
                 imgHeight= 805,
-                ratioWidth = imgWidth / $('#game').width(),
-                ratioHeight = imgHeight / $('#game').height(),
+                ratioWidth = imgWidth / max.width,
+                ratioHeight = imgHeight / max.height,
                 ratio = Math.max(ratioWidth, ratioHeight);
 
             $(target).css({
@@ -20,12 +25,13 @@ var game_puzzle = {
             })
             $(target).width(imgWidth / ratio);
             $(target).height(imgHeight / ratio);
+
             $('#game').append($(target));
         }
 
         var target = $('#target'),
-            ratioWidth = target.width() / $('#game').width(),
-            ratioHeight = target.height() / $('#game').height(),
+            ratioWidth = target.width() / max.width,
+            ratioHeight = target.height() / max.height,
             ratio = Math.max(ratioWidth, ratioHeight),
             row,
             col,
