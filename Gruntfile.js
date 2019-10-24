@@ -38,18 +38,6 @@ module.exports = function (grunt) {
                     verbose: true
                 }
             },
-            /*replace: {
-                build: {
-                    src: src.css.concat([dst.css]),
-                    overwrite: true,
-                    replacements: [
-                        {
-                            from: '../../img/',
-                            to: '../img/'
-                        }
-                    ]
-                }
-            },*/
             uglify: {
                 build: {
                     src: src.js,
@@ -69,6 +57,6 @@ module.exports = function (grunt) {
         };
 
     grunt.initConfig(config);
-    grunt.registerTask("build", ["jsvalidate", "cssmin", "uglify"/*, "replace"*/]);
+    grunt.registerTask("build", ["jsvalidate", "cssmin", "uglify"]);
     grunt.registerTask("default", ["watch"]);
 };
