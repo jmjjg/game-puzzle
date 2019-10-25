@@ -14,10 +14,8 @@ var
         }
     },
     game_board = {
-        'border': 5,
         'height': function() {
-            var real = $('#game').height() - ($('nav').length === 0 ? 0 : $('nav').outerHeight());
-            return parseInt((real - this.border) * 2 / 3, 10);
+            return parseInt($('#game').height() - ($('nav').length === 0 ? 0 : $('nav').outerHeight()), 10);
         },
         'width': function() {
             return parseInt($('#game').width(), 10);
@@ -38,60 +36,42 @@ var
         'tiles': [],
         'settings': {
             'player': 'Joueur 1',
+            'border': 5,
             'columns': 3,
             'rows': 2,
             'tolerance': 50,
             'opacity': 0.75
         },
         'refresh': function() {
-            var game_puzzle = this;
-
-            if ($('#target').length === 0) {
-                var target = $('<div id="target"></div>'),
-                    ratioWidth = target_image.realWidth() / game_board.width(),
-                    ratioHeight = target_image.realHeight() / game_board.height(),
-                    ratio = Math.max(ratioWidth, ratioHeight);
-
-                $(target).css({
-                    'background-image': target_image.url()
-                })
-                $(target).width(target_image.realWidth() / ratio);
-                $(target).height(target_image.realHeight() / ratio);
-
-                $('#game').append($(target));
-            }
-
-            var target = $('#target'),
-                ratioWidth = target.width() / game_board.width(),
-                ratioHeight = target.height() / game_board.height(),
+            var game_puzzle = this,
+                availableHeight = parseInt((game_board.height() - game_puzzle.settings.border) * game_puzzle.settings.rows / (game_puzzle.settings.rows + 1), 10),
+                ratioWidth = target_image.realWidth() / game_board.width(),
+                ratioHeight = target_image.realHeight() / availableHeight,
                 ratio = Math.max(ratioWidth, ratioHeight),
+                target,
                 row,
                 col,
                 tileHeight,
-                tileWidth,
-                game_puzzle = this;
+                tileWidth;
 
-            $(target).width($(target).width() / ratio);
-            $(target).height($(target).height() / ratio);
+            if ($('#target').length === 0) {
+                target = $('<div id="target"></div>')
+                    .css({'background-image': target_image.url()});
 
-            targetWidth = Math.round($(target).width());
-            targetHeight = Math.round($(target).height());
-            tileWidth = Math.round($(target).width() / game_puzzle.settings.columns);
-            tileHeight = Math.round($(target).height() / game_puzzle.settings.rows);
+                $('#game').append($(target));
 
-            // Create
-            if (game_puzzle.tiles.length < (game_puzzle.settings.rows * game_puzzle.settings.columns)) {
                 for (row = 0; row < game_puzzle.settings.rows; row++) {
                     for (col = 0; col < game_puzzle.settings.columns; col++) {
                         (function (game_puzzle, row, col) {
                             var tile;
                             tile = $('<div class="tile">');
-                            $(tile).css({
-                                    'background-image': $(target).css('background-image'),
-                                    'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
-                                })
+                            $(tile)
                                 .attr('data-col', col)
-                                .attr('data-row', row);
+                                .attr('data-row', row)
+                                .css({
+                                    'background-image': target_image.url(),
+                                    'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
+                                });
 
                             game_puzzle.tiles.push(tile);
                         })(this, row, col);
@@ -104,7 +84,16 @@ var
                 $.each(game_puzzle.tiles, function(index) {
                     $('#game').append(game_puzzle.tiles[index]);
                 });
+            } else {
+                target = $('#target');
             }
+
+            target.css({'background-image': target_image.url()})
+                .width(Math.round(target_image.realWidth() / ratio))
+                .height(Math.round(target_image.realHeight() / ratio));
+
+            tileWidth = Math.round($(target).width() / game_puzzle.settings.columns);
+            tileHeight = Math.round($(target).height() / game_puzzle.settings.rows);
 
             // Position
             $('#game .tile').each(function(index, tile) {
@@ -112,12 +101,12 @@ var
                     row = $(tile).attr('data-row');
 
                 $(tile).css({
-                    'left': (index * (tileWidth + game_board.border)) + 'px',
-                    'top': $('#target').position().top + $('#target').height() + game_board.border,
+                    'left': (game_puzzle.settings.border + (index * (tileWidth + game_puzzle.settings.border))) + 'px',
+                    'top': $('#target').position().top + $('#target').height() + game_puzzle.settings.border,
                     'width': tileWidth,
                     'height': tileHeight,
                     'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
-                    'background-size': targetWidth + 'px ' + targetHeight + 'px',
+                    'background-size': $(target).width() + 'px ' + $(target).height() + 'px',
                 });
             });
 
