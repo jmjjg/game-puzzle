@@ -34,15 +34,47 @@ var
     },
     game_puzzle = {
         'tiles': [],
-        'settings': {
+        'defaults': {
             'player': 'Joueur 1',
             'border': 5,
             'columns': 3,
             'rows': 2,
             'tolerance': 50,
-            'opacity': 0.75
+            'tileOpacity': 0.75,
+            'backgroundOpacity': 1
+        },
+        'settings': {},
+        'shutdown': function() {
+            $('#game .tile').remove();
+            $('#target').remove();
+            this.tiles = [];
+        },
+        'apply': function() {
+            this.shutdown();
+            this.refresh();
+        },
+        'reset': function() {
+            this.settings = $.extend({}, this.defaults);
+            this.shutdown();
+            this.init();
         },
         'refresh': function() {
+            var game_puzzle = this;
+            $.each(game_puzzle.settings, function(key) {
+                var field = $('#'+key),
+                    value = field ? $(field).val() : null
+                ;
+
+                if (value) {
+                    if (value.match(/^[0-9]+$/)) {
+                        value = parseInt(value, 10);
+                    } else if (value.match(/^[0-9]+\.[0-9]+$/)) {
+                        value = parseFloat(value);
+                    }
+                    game_puzzle.settings[key] = value;
+                }
+            });
+
             var game_puzzle = this,
                 availableHeight = parseInt((game_board.height() - game_puzzle.settings.border) * game_puzzle.settings.rows / (game_puzzle.settings.rows + 1), 10),
                 ratioWidth = target_image.realWidth() / game_board.width(),
@@ -56,7 +88,11 @@ var
 
             if ($('#target').length === 0) {
                 target = $('<div id="target"></div>')
-                    .css({'background-image': target_image.url()});
+                    .css({
+                        'background-image': target_image.url(),
+                        'opacity': game_puzzle.settings.backgroundOpacity
+                    })
+                ;
 
                 $('#game').append($(target));
 
@@ -112,14 +148,35 @@ var
 
             // https://jqueryui.com/draggable/
             // https://api.jqueryui.com/draggable/
-            $('.tile').draggable({
-                'opacity': this.settings.opacity,
-                'revert': true,
-                'scroll': false
-            });
+            $('.tile')
+                .draggable({
+                    'opacity': this.settings.tileOpacity,
+                    'revert': true,
+                    'scroll': false
+                })
+                /*.on('mousedown', function(event) {
+                    console.log(['mousedown', event]);
+                    $(event).stop();
+                    // new $.Event('drag', {target: this});
+                })
+                .on('mouseup', function(event) {
+                    console.log(['mouseup', event]);
+                    $(event).stop();
+                    // new $.Event('drag', {target: this});
+                })*/;
         },
         'init': function () {
             var game_puzzle = this;
+            game_puzzle.settings = $.extend({}, game_puzzle.defaults); // @todo: or stored
+
+            $.each(game_puzzle.settings, function(key) {
+                var field = $('#'+key);
+
+                if (field) {
+                    $(field).val(game_puzzle.settings[key]);
+                }
+            });
+
             game_puzzle.refresh();
 
             // https://jqueryui.com/droppable/

@@ -24,9 +24,6 @@ html, body {
     background-attachment: local;
 }
 #settings {
-    max-height: 100vh;
-    overflow: auto;
-    position: absolute;
-    right: 0;
-    z-index: 100;
+    background: white;
+    padding: 1rem;
 }
