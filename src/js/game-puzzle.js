@@ -23,16 +23,17 @@ var
     },
     target_image = {
         'url': function() {
-            return 'url("src/img/img-001.jpg")';
+            return 'url("' + $('#image').val() + '")';
         },
         'realWidth': function() {
-            return 1436;
+            return $('#image').find(':selected').attr('data-width');
         },
         'realHeight': function() {
-            return 805;
+            return $('#image').find(':selected').attr('data-height');
         },
     },
     game_puzzle = {
+        'start': null,
         'tiles': [],
         'defaults': {
             'player': 'Joueur 1',
@@ -84,9 +85,11 @@ var
                 row,
                 col,
                 tileHeight,
-                tileWidth;
+                tileWidth,
+                initialize = $('#target').length === 0;
 
-            if ($('#target').length === 0) {
+            if (initialize === true) {
+                $('#message').remove();
                 target = $('<div id="target"></div>')
                     .css({
                         'background-image': target_image.url(),
@@ -164,6 +167,10 @@ var
                     $(event).stop();
                     // new $.Event('drag', {target: this});
                 })*/;
+
+                if (initialize === true) {
+                    game_puzzle.start = new Date();
+                }
         },
         'init': function () {
             var game_puzzle = this;
@@ -202,6 +209,10 @@ var
                         });
                         tile.remove();
                         game_puzzle.refresh();
+
+                        if ($('.tile').length === 0) {
+                            game_puzzle.onSuccess();
+                        }
                     }
                 }
             });
@@ -209,5 +220,13 @@ var
             $(window).resize(function () {
                 game_puzzle.refresh();
             });
+        },
+        'onSuccess': function() {
+            var game_puzzle = this,
+                seconds = parseInt((new Date().getTime() - game_puzzle.start.getTime())/1000, 10),
+                msgstr = "Bravo " + game_puzzle.settings.player + ", tu as terminé le puzzle en " + seconds + " secondes",
+                message = $('<h1 id="message"></h1>').text(msgstr);
+
+            $('#target').after(message);
         }
     };
