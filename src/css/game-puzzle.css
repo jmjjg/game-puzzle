@@ -18,7 +18,7 @@ html, body {
     background-size: 100% 100%;
     margin: auto;
 }
-.tile {
+.tile, .tile-correct {
     position: absolute;
     background-repeat: no-repeat;
     background-attachment: local;

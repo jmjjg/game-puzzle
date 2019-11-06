@@ -42,11 +42,11 @@ var
             'rows': 2,
             'tolerance': 50,
             'tileOpacity': 0.75,
-            'backgroundOpacity': 1
+            'backgroundOpacity': 0.4
         },
         'settings': {},
         'shutdown': function() {
-            $('#game .tile').remove();
+            $('#game .tile, #game .tile-correct').remove();
             $('#target').remove();
             this.tiles = [];
         },
@@ -203,11 +203,20 @@ var
                         );
 
                     if (correct === true) {
+                        $(tile)
+                            .draggable({
+                                disabled: true,
+                                revert: false
+                            })
+                            .draggable('destroy')
+                            .css({'opacity': 1})
+                            .attr('class', 'tile-correct');
+
                         tile.animate({
                             'left': target.left + 'px',
                             'top': target.top + 'px'
                         });
-                        tile.remove();
+
                         game_puzzle.refresh();
 
                         if ($('.tile').length === 0) {
