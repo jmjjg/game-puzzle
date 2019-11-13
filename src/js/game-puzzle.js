@@ -42,7 +42,8 @@ var
             'rows': 2,
             'tolerance': 50,
             'tileOpacity': 0.75,
-            'backgroundOpacity': 0.4
+            'backgroundOpacity': 0.4,
+            'clickToDrag': true,
         },
         'settings': {},
         'shutdown': function() {
@@ -156,17 +157,25 @@ var
                     'opacity': this.settings.tileOpacity,
                     'revert': true,
                     'scroll': false
-                })
-                /*.on('mousedown', function(event) {
-                    console.log(['mousedown', event]);
-                    $(event).stop();
-                    // new $.Event('drag', {target: this});
-                })
-                .on('mouseup', function(event) {
-                    console.log(['mouseup', event]);
-                    $(event).stop();
-                    // new $.Event('drag', {target: this});
-                })*/;
+                });
+
+                if ($('#clickToDrag').is(':checked') === true) {
+                    // @see: https://stackoverflow.com/a/56590231
+                    $('.tile')
+                        .click(function(event) {
+                            if ($(this).hasClass('dragging')) {
+                                $(this).removeClass('dragging');
+                                event.type = 'mouseup.draggable';
+                                event.target = this;
+                                $(this).trigger(event);
+                            } else {
+                                $(this).addClass('dragging');
+                                event.type = 'mousedown.draggable';
+                                event.target = this;
+                                $(this).trigger(event);
+                            }
+                        });
+                }
 
                 if (initialize === true) {
                     game_puzzle.start = new Date();
@@ -176,11 +185,15 @@ var
             var game_puzzle = this;
             game_puzzle.settings = $.extend({}, game_puzzle.defaults); // @todo: or stored
 
+            // Import settings
             $.each(game_puzzle.settings, function(key) {
                 var field = $('#'+key);
-
                 if (field) {
-                    $(field).val(game_puzzle.settings[key]);
+                    if ($(field).is('input[type=checkbox]')) {
+                        $(field).prop('checked', game_puzzle.settings[key] === true);
+                    } else {
+                        $(field).val(game_puzzle.settings[key]);
+                    }
                 }
             });
 
