@@ -150,6 +150,23 @@ var
                 });
             });
 
+            // Position
+            $('#game .tile-correct').each(function(index, tile) {
+                var col = $(tile).attr('data-col'),
+                    row = $(tile).attr('data-row'),
+                    tileWidth = Math.round($(target).width() / game_puzzle.settings.columns),
+                    tileHeight = Math.round($(target).height() / game_puzzle.settings.rows);
+
+                $(tile).css({
+                    'left': $('#target').offset().left + (col * tileWidth),
+                    'top': $('#target').offset().top + (row * tileHeight),
+                    'width': tileWidth,
+                    'height': tileHeight,
+                    'background-position': '-' + (col * tileWidth) + 'px -' + (row * tileHeight) + 'px',
+                    'background-size': $(target).width() + 'px ' + $(target).height() + 'px'
+                });
+            });
+
             // https://jqueryui.com/draggable/
             // https://api.jqueryui.com/draggable/
             $('.tile')
