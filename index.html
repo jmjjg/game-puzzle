@@ -75,10 +75,20 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="clickToDrag">
-                                            <label class="form-check-label" for="clickToDrag">Cliquer pour déplacer</label>
-                                        </div>
+                                        <fieldset class="mb-3">
+                                            <legend>Déplacements</legend>
+                                            <div class="form-group row">
+                                                <label for="tolerance" class="control-label col-sm-6">Tolérance: <span class="range-value">0</span></label>
+                                                <div class="col-sm-6">
+                                                    <input type="range" id="tolerance" min="0" max="150" class="form-control-range">
+                                                </div>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="clickToDrag">
+                                                <label class="form-check-label" for="clickToDrag">Cliquer pour déplacer</label>
+                                            </div>
+                                        </fieldset>
+<!--                                        tolerance-->
                                         <fieldset class="mb-3">
                                             <legend>Nombre de pièces</legend>
                                             <div class="form-group row">
