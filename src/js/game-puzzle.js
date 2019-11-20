@@ -37,13 +37,15 @@ var
         'tiles': [],
         'defaults': {
             'player': 'Joueur 1',
-            'border': 5,
+            'image': 'src/img/Big Buck Bunny/bbb-splash.png',
             'columns': 3,
             'rows': 2,
             'tolerance': 50,
-            'tileOpacity': 0.75,
+            'clickToDrag': false,
             'backgroundOpacity': 0.4,
-            'clickToDrag': true,
+            'tileOpacity': 0.75,
+            // @todo
+            'border': 5,
         },
         'settings': {},
         'shutdown': function() {
@@ -263,9 +265,13 @@ var
         'onSuccess': function() {
             var game_puzzle = this,
                 seconds = parseInt((new Date().getTime() - game_puzzle.start.getTime())/1000, 10),
-                msgstr = "Bravo " + game_puzzle.settings.player + ", tu as terminé le puzzle en " + seconds + " secondes",
-                message = $('<h1 id="message"></h1>').text(msgstr);
+                title = $('<h1 class="alert-heading"></h1>').text("Bravo " + game_puzzle.settings.player + "!");
+                alert = $('<div id="message" class="alert alert-success m-3" role="alert"></div>');
+                message = $('<p></p>').text("Tu as terminé le puzzle en " + seconds + " secondes");
+                $(alert)
+                    .append(title)
+                    .append(message);
 
-            $('#target').after(message);
+            $('#target').after(alert);
         }
     };
