@@ -52,7 +52,13 @@
                                         <a class="nav-link active" id="general-tab-label" data-toggle="tab" href="#general-tab" role="tab" aria-controls="home" aria-selected="true">Général</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="advanced-tab-label" data-toggle="tab" href="#advanced-tab" role="tab" aria-controls="profile" aria-selected="false">Avancé</a>
+                                        <a class="nav-link" id="tiles-tab-label" data-toggle="tab" href="#tiles-tab" role="tab" aria-controls="profile" aria-selected="false">Pièces</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="movements-tab-label" data-toggle="tab" href="#movements-tab" role="tab" aria-controls="profile" aria-selected="false">Déplacements</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="opacity-tab-label" data-toggle="tab" href="#opacity-tab" role="tab" aria-controls="profile" aria-selected="false">Opacité</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
@@ -63,7 +69,7 @@
                                                 <input type="text" id="player" class="form-control">
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="mb-3 form-group row">
                                             <label for="image" class="control-label col-sm-6">Image</label>
                                             <div class="col-sm-6">
                                                 <select id="image" class="form-control">
@@ -75,52 +81,46 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <fieldset class="mb-3">
-                                            <legend>Déplacements</legend>
-                                            <div class="form-group row">
-                                                <label for="tolerance" class="control-label col-sm-6">Tolérance: <span class="range-value">0</span></label>
-                                                <div class="col-sm-6">
-                                                    <input type="range" id="tolerance" min="0" max="150" class="form-control-range">
-                                                </div>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="clickToDrag">
-                                                <label class="form-check-label" for="clickToDrag">Cliquer pour déplacer</label>
-                                            </div>
-                                        </fieldset>
-<!--                                        tolerance-->
-                                        <fieldset class="mb-3">
-                                            <legend>Nombre de pièces</legend>
-                                            <div class="form-group row">
-                                                <label for="columns" class="control-label col-sm-6">Horizontalement: <span class="range-value">0</span></label>
-                                                <div class="col-sm-6">
-                                                    <input type="range" id="columns" min="1" max="5" class="form-control-range">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="rows" class="control-label col-sm-6">Verticalement: <span class="range-value">0</span></label>
-                                                <div class="col-sm-6">
-                                                    <input type="range" id="rows" min="1" max="5" class="form-control-range">
-                                                </div>
-                                            </div>
-                                        </fieldset>
                                     </div>
-                                    <div class="tab-pane fade" id="advanced-tab" role="tabpanel" aria-labelledby="advanced-tab-label">
-                                        <fieldset class="mt-3 mb-3">
-                                            <legend>Opacité</legend>
-                                            <div class="form-group row">
-                                                <label for="backgroundOpacity" class="control-label col-sm-6">Cible: <span class="range-value">0</span></label>
-                                                <div class="col-sm-6">
-                                                    <input type="range" id="backgroundOpacity" min="0" max="1" step="0.01" class="form-control-range">
-                                                </div>
+                                    <div class="tab-pane fade" id="tiles-tab" role="tabpanel" aria-labelledby="tiles-tab-label">
+                                        <div class="mt-3 form-group row">
+                                            <label for="columns" class="control-label col-sm-6">Horizontalement: <span class="range-value">0</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="range" id="columns" min="1" max="5" class="form-control-range">
                                             </div>
-                                            <div class="form-group row">
-                                                <label for="tileOpacity" class="control-label col-sm-6">Pièces: <span class="range-value">0</span></label>
-                                                <div class="col-sm-6">
-                                                    <input type="range" id="tileOpacity" min="0" max="1" step="0.01" class="form-control-range">
-                                                </div>
+                                        </div>
+                                        <div class="mb-3 form-group row">
+                                            <label for="rows" class="control-label col-sm-6">Verticalement: <span class="range-value">0</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="range" id="rows" min="1" max="5" class="form-control-range">
                                             </div>
-                                        </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="movements-tab" role="tabpanel" aria-labelledby="movements-tab-label">
+                                        <div class="mt-3 form-group row">
+                                            <label for="tolerance" class="control-label col-sm-6">Tolérance: <span class="range-value">0</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="range" id="tolerance" min="0" max="150" class="form-control-range">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="clickToDrag">
+                                            <label class="form-check-label" for="clickToDrag">Cliquer pour déplacer</label>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="opacity-tab" role="tabpanel" aria-labelledby="opacity-tab-label">
+                                        <div class="mt-3 form-group row">
+                                            <label for="backgroundOpacity" class="control-label col-sm-6">Cible: <span class="range-value">0</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="range" id="backgroundOpacity" min="0" max="1" step="0.01" class="form-control-range">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 form-group row">
+                                            <label for="tileOpacity" class="control-label col-sm-6">Pièces: <span class="range-value">0</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="range" id="tileOpacity" min="0" max="1" step="0.01" class="form-control-range">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
