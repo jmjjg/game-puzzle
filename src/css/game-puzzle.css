@@ -22,6 +22,10 @@ html, body {
     position: absolute;
     background-repeat: no-repeat;
     background-attachment: local;
+    z-index: 100;
+}
+.tile.ui-draggable-dragging {
+    z-index: 1000;
 }
 #settings {
     background: white;
