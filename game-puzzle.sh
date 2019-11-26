@@ -69,7 +69,7 @@ docker_compose_up_down()
     set -o errexit
 
     if [ $code -ne 0 ] ; then
-        echo >&2 "Error while restarting ${project_name} ($code)"
+        echo >&2 "Error while restarting ($code)"
     fi
 
     return $code

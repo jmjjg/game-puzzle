@@ -3,6 +3,9 @@ module.exports = function (grunt) {
         replace: 'grunt-text-replace'
     });
 
+    // @see https://gruntjs.com/configuring-tasks
+    // @see https://www.npmjs.com/package/grunt-stylelint
+
     var
         dependencies = {
             "src": {
@@ -18,7 +21,21 @@ module.exports = function (grunt) {
                     "src/js/jquery-ui.js"
                 ]
             },
-            "dst": {
+            "dest": {
+                "css": "out/game-puzzle-dependencies.min.css",
+                "js": "out/game-puzzle-dependencies.min.js"
+            }
+        },
+        game = {
+            "src": {
+                "css": [
+                    "src/css/game-puzzle.css"
+                ],
+                "js": [
+                    "src/js/game-puzzle.js"
+                ]
+            },
+            "dest": {
                 "css": "out/game-puzzle-dependencies.min.css",
                 "js": "out/game-puzzle-dependencies.min.js"
             }
@@ -34,9 +51,12 @@ module.exports = function (grunt) {
             },
             "cssmin": {
                 "build": {
-                    "files": {
-                        "out/game-puzzle-dependencies.min.css": dependencies.src.css
-                    }
+                    "files": [
+                        {
+                            "src": dependencies.src.css,
+                            "dest": dependencies.dest.css
+                        }
+                    ]
                 }
             },
             "jsvalidate": {
@@ -45,13 +65,18 @@ module.exports = function (grunt) {
                         "src": dependencies.src.js
                     }
                 },
+                "game": {
+                    "files": {
+                        "src": game.src.js
+                    }
+                },
                 "options": {
                     "verbose": true
                 }
             },
             "replace": {
                 "build": {
-                    "src": [dependencies.dst.css],
+                    "src": dependencies.dest.css,
                     "overwrite": true,
                     "replacements": [
                         {
@@ -64,13 +89,17 @@ module.exports = function (grunt) {
             "uglify": {
                 "build": {
                     "src": dependencies.src.js,
-                    "dest": dependencies.dst.js
+                    "dest": dependencies.dest.js
                 }
             },
             "watch": {
                 "build": {
                     "files": dependencies.src.js,
                     "tasks": ["build"]
+                },
+                "game": {
+                    "files": game.src.js,
+                    "tasks": ["jsvalidate:game"]
                 }
             }
         };
@@ -94,7 +123,7 @@ module.exports = function (grunt) {
     //             "src/js/game-puzzle.js",
     //         ]
     //     },
-    //     dst = {
+    //     dest = {
     //         css: "out/game-puzzle.css",
     //         js: "out/game-puzzle.js"
     //     },
@@ -139,7 +168,7 @@ module.exports = function (grunt) {
     //         uglify: {
     //             build: {
     //                 src: src.js,
-    //                 dest: dst.js
+    //                 dest: dest.js
     //             }
     //         },
     //         watch: {

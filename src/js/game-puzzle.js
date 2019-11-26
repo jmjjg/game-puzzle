@@ -41,7 +41,7 @@ var
             'columns': 3,
             'rows': 2,
             'tolerance': 50,
-            'clickToDrag': false,
+            'clickToDrag': true,
             'backgroundOpacity': 0.4,
             'tileOpacity': 0.75,
             // @todo
@@ -181,19 +181,54 @@ var
                 if ($('#clickToDrag').is(':checked') === true) {
                     // @see: https://stackoverflow.com/a/56590231
                     $('.tile')
-                        .click(function(event) {
-                            if ($(this).hasClass('dragging')) {
-                                $(this).removeClass('dragging');
-                                event.type = 'mouseup.draggable';
-                                event.target = this;
-                                $(this).trigger(event);
-                            } else {
-                                $(this).addClass('dragging');
-                                event.type = 'mousedown.draggable';
-                                event.target = this;
-                                $(this).trigger(event);
+                        .on(
+                            'click',
+                            function(event) {
+                                // console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
+                                if ($(this).hasClass('dragging')) {
+                                    event.type = 'mouseup.draggable';
+                                    event.target = this;
+                                    $(this).removeClass('dragging');
+                                    $(this).trigger(event);
+                                } else {
+                                    event.type = 'mousedown.draggable';
+                                    event.target = this;
+                                    $(this).addClass('dragging');
+                                    $(this).trigger(event);
+                                }
                             }
-                        });
+                        )
+                        // .on(
+                        //     'dblclick',
+                        //     function(event) {
+                        //         console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
+                        //     }
+                        // )
+                        // .on(
+                        //     'mouseup',
+                        //     function(event) {
+                        //         if ($(this).hasClass('dragging') === false) {
+                        //             console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
+                        //         }
+                        //     }
+                        // )
+                        // .on(
+                        //     'mousedown',
+                        //     function(event) {
+                        //         if ($(this).hasClass('dragging') === false) {
+                        //             console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
+                        //         }
+                        //     }
+                        // )
+                        // .on(
+                        //     'drag',
+                        //     function(event) {
+                        //         if ($(this).hasClass('dragging') === false) {
+                        //             console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
+                        //         }
+                        //     }
+                        // )
+                    ;
                 }
 
                 if (initialize === true) {
