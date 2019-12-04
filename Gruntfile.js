@@ -18,7 +18,8 @@ module.exports = function (grunt) {
                     "/opt/node_modules/popper.js/dist/umd/popper.js",
                     "/opt/node_modules/bootstrap/dist/js/bootstrap.js",
                     "/opt/node_modules/@fortawesome/fontawesome-free/js/all.js",
-                    "src/js/jquery-ui.js"
+                    "src/js/jquery-ui.js",
+                    "src/js/jquery.ui.touch-punch.js"
                 ]
             },
             "dest": {
