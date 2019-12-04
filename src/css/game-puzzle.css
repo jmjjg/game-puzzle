@@ -31,3 +31,7 @@ html, body {
     background: white;
     padding: 1rem;
 }
+#toolbar {
+    position: absolute;
+    z-index: 500;
+}

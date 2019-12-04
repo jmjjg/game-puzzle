@@ -169,71 +169,56 @@ var
                 });
             });
 
-            // https://jqueryui.com/draggable/
-            // https://api.jqueryui.com/draggable/
             $('.tile')
                 .draggable({
                     'opacity': this.settings.tileOpacity,
                     'revert': true,
                     'scroll': false
-                });
+                })
+            ;
 
-                if ($('#clickToDrag').is(':checked') === true) {
-                    // @see: https://stackoverflow.com/a/56590231
-                    $('.tile')
-                        .on(
-                            'click',
-                            function(event) {
-                                // console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
-                                if ($(this).hasClass('dragging')) {
-                                    event.type = 'mouseup.draggable';
-                                    event.target = this;
-                                    $(this).removeClass('dragging');
-                                    $(this).trigger(event);
-                                } else {
-                                    event.type = 'mousedown.draggable';
-                                    event.target = this;
-                                    $(this).addClass('dragging');
-                                    $(this).trigger(event);
-                                }
+            // @see: https://stackoverflow.com/a/56590231
+            if ($('#clickToDrag').is(':checked') === true) {
+                var
+                    startDragging = function(event, ui) {
+                        $(event.target).draggable('enable');
+
+                        event.type = 'mousedown.draggable';
+                        $(event.target).trigger(event, ui);
+                    },
+                    stopDragging = function(event, ui) {
+                        event.type = 'mouseup.draggable';
+                        $(event.target).trigger(event, ui);
+                    }
+                ;
+
+                $('.tile')
+                    .draggable({
+                        'disabled': true,
+                        'start': function(event, ui) {
+                            $(event.target).addClass('dragging');
+                        },
+                        'stop': function(event, ui) {
+                            $(event.target).removeClass('dragging');
+                            $(event.target).draggable('disable');
+                        }
+                    })
+                    .on(
+                        'click',
+                        function(event) {
+                            if ($(event.target).hasClass('dragging') === true) {
+                                stopDragging(event);
+                            } else {
+                                startDragging(event);
                             }
-                        )
-                        // .on(
-                        //     'dblclick',
-                        //     function(event) {
-                        //         console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
-                        //     }
-                        // )
-                        // .on(
-                        //     'mouseup',
-                        //     function(event) {
-                        //         if ($(this).hasClass('dragging') === false) {
-                        //             console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
-                        //         }
-                        //     }
-                        // )
-                        // .on(
-                        //     'mousedown',
-                        //     function(event) {
-                        //         if ($(this).hasClass('dragging') === false) {
-                        //             console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
-                        //         }
-                        //     }
-                        // )
-                        // .on(
-                        //     'drag',
-                        //     function(event) {
-                        //         if ($(this).hasClass('dragging') === false) {
-                        //             console.log({type: event.type, dragging: $(event.target).hasClass('dragging')});
-                        //         }
-                        //     }
-                        // )
-                    ;
-                }
+                        }
+                    )
+                ;
+            }
 
-                if (initialize === true) {
-                    game_puzzle.start = new Date();
-                }
+            if (initialize === true) {
+                game_puzzle.start = new Date();
+            }
         },
         'init': function () {
             var game_puzzle = this;
