@@ -179,28 +179,23 @@ var
 
                 // @see: https://stackoverflow.com/a/56590231
                 if ($('#clickToDrag').is(':checked') === true) {
-                    $.extend(options, {'disabled': true});
-
                     $('.tile')
-                        .draggable(options)
                         .on(
                             'click',
                             function(event) {
                                 if ($(event.target).hasClass('tile') === true) {
-                                    if ($(event.target).hasClass('dragging') === true) {
+                                    if ($(event.target).hasClass('ui-draggable-dragging') === true) {
                                         // Stop dragging
-                                        $(event.target).removeClass('dragging');
-                                        $(event.target).draggable('disable');
-
                                         event.type = 'mouseup.draggable';
-                                        $(event.target).trigger(event);
+                                        $(event.target)
+                                            .trigger(event)
+                                            .draggable('destroy');
                                     } else {
                                         // Start dragging
-                                        $(event.target).draggable(options).draggable('enable');
-                                        $(event.target).addClass('dragging');
-
                                         event.type = 'mousedown.draggable';
-                                        $(event.target).trigger(event);
+                                        $(event.target)
+                                            .draggable(options)
+                                            .trigger(event);
                                     }
                                 }
                             }
