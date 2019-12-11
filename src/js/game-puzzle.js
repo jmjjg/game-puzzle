@@ -169,54 +169,46 @@ var
                 });
             });
 
-            $('.tile')
-                .draggable({
-                    'opacity': this.settings.tileOpacity,
-                    'revert': true,
-                    'scroll': false
-                })
-            ;
-
-            // @see: https://stackoverflow.com/a/56590231
-            if ($('#clickToDrag').is(':checked') === true) {
-                var
-                    startDragging = function(event, ui) {
-                        $(event.target).draggable('enable');
-
-                        event.type = 'mousedown.draggable';
-                        $(event.target).trigger(event, ui);
-                    },
-                    stopDragging = function(event, ui) {
-                        event.type = 'mouseup.draggable';
-                        $(event.target).trigger(event, ui);
-                    }
-                ;
-
-                $('.tile')
-                    .draggable({
-                        'disabled': true,
-                        'start': function(event, ui) {
-                            $(event.target).addClass('dragging');
-                        },
-                        'stop': function(event, ui) {
-                            $(event.target).removeClass('dragging');
-                            $(event.target).draggable('disable');
-                        }
-                    })
-                    .on(
-                        'click',
-                        function(event) {
-                            if ($(event.target).hasClass('dragging') === true) {
-                                stopDragging(event);
-                            } else {
-                                startDragging(event);
-                            }
-                        }
-                    )
-                ;
-            }
-
             if (initialize === true) {
+                var
+                    options = {
+                        'opacity': this.settings.tileOpacity,
+                        'revert': true,
+                        'scroll': false
+                    };
+
+                // @see: https://stackoverflow.com/a/56590231
+                if ($('#clickToDrag').is(':checked') === true) {
+                    $.extend(options, {'disabled': true});
+
+                    $('.tile')
+                        .draggable(options)
+                        .on(
+                            'click',
+                            function(event) {
+                                if ($(event.target).hasClass('tile') === true) {
+                                    if ($(event.target).hasClass('dragging') === true) {
+                                        // Stop dragging
+                                        $(event.target).removeClass('dragging');
+                                        $(event.target).draggable('disable');
+
+                                        event.type = 'mouseup.draggable';
+                                        $(event.target).trigger(event);
+                                    } else {
+                                        // Start dragging
+                                        $(event.target).draggable(options).draggable('enable');
+                                        $(event.target).addClass('dragging');
+
+                                        event.type = 'mousedown.draggable';
+                                        $(event.target).trigger(event);
+                                    }
+                                }
+                            }
+                        )
+                    ;
+                } else {
+                    $('.tile').draggable(options);
+                }
                 game_puzzle.start = new Date();
             }
         },
